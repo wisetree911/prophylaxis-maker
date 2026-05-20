@@ -23,7 +23,6 @@ go run .
 curl -X POST http://localhost:8080/maintenances \
   -H 'Content-Type: application/json' \
   -d '{
-    "id": "nginx-status",
     "name": "Check nginx",
     "active": true,
     "command": "systemctl status nginx --no-pager",
