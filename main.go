@@ -79,9 +79,7 @@ func (a *App) handleMaintenances(w http.ResponseWriter, r *http.Request) {
 			writeError(w, http.StatusBadRequest, "invalid json")
 			return
 		}
-		if m.ID == "" {
-			m.ID = newID()
-		}
+		m.ID = newID()
 		normalizePorts(&m)
 		if err := validateMaintenance(m); err != nil {
 			writeError(w, http.StatusBadRequest, err.Error())
