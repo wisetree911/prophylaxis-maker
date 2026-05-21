@@ -173,45 +173,15 @@ type commandResult struct {
 }
 
 func sshClientConfig(h SSHHost, timeout time.Duration) (*ssh.ClientConfig, error) {
-	methods, err := authMethods(h.Auth)
-	if err != nil {
-		return nil, err
+	if h.Auth.Password == "" {
+		return nil, errors.New("password is required")
 	}
 	return &ssh.ClientConfig{
 		User:            h.User,
-		Auth:            methods,
+		Auth:            []ssh.AuthMethod{ssh.Password(h.Auth.Password)},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 		Timeout:         timeout,
 	}, nil
-}
-
-func authMethods(auth SSHAuth) ([]ssh.AuthMethod, error) {
-	var methods []ssh.AuthMethod
-
-	if auth.Password != "" {
-		methods = append(methods, ssh.Password(auth.Password))
-	}
-	if auth.PrivateKeyPath != "" {
-		key, err := os.ReadFile(auth.PrivateKeyPath)
-		if err != nil {
-			return nil, fmt.Errorf("read private key: %w", err)
-		}
-
-		var signer ssh.Signer
-		if auth.PrivateKeyPassphrase != "" {
-			signer, err = ssh.ParsePrivateKeyWithPassphrase(key, []byte(auth.PrivateKeyPassphrase))
-		} else {
-			signer, err = ssh.ParsePrivateKey(key)
-		}
-		if err != nil {
-			return nil, fmt.Errorf("parse private key: %w", err)
-		}
-		methods = append(methods, ssh.PublicKeys(signer))
-	}
-	if len(methods) == 0 {
-		return nil, errors.New("password or private_key_path is required")
-	}
-	return methods, nil
 }
 
 func validateMaintenance(m Maintenance) error {
@@ -237,8 +207,8 @@ func validateHost(name string, h SSHHost) error {
 	if h.Port < 0 || h.Port > 65535 {
 		return fmt.Errorf("%s.port is invalid", name)
 	}
-	if h.Auth.Password == "" && h.Auth.PrivateKeyPath == "" {
-		return fmt.Errorf("%s.auth.password or %s.auth.private_key_path is required", name, name)
+	if h.Auth.Password == "" {
+		return fmt.Errorf("%s.auth.password is required", name)
 	}
 	return nil
 }

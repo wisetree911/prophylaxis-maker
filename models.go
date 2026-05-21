@@ -17,7 +17,5 @@ type SSHHost struct {
 }
 
 type SSHAuth struct {
-	Password             string `json:"password,omitempty" yaml:"password,omitempty"`
-	PrivateKeyPath       string `json:"private_key_path,omitempty" yaml:"private_key_path,omitempty"`
-	PrivateKeyPassphrase string `json:"private_key_passphrase,omitempty" yaml:"private_key_passphrase,omitempty"`
+	Password string `json:"password" yaml:"password"`
 }
