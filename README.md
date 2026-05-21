@@ -30,7 +30,7 @@ curl -X POST http://localhost:8080/maintenances \
       "address": "10.0.2.15",
       "port": 22,
       "user": "app",
-      "auth": {"private_key_path": "/Users/me/.ssh/id_ed25519"}
+      "auth": {"password": "host-password"}
     },
     "bastion": {
       "address": "bastion.example.com",
