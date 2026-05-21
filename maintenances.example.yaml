@@ -1,0 +1,17 @@
+maintenances:
+  - id: nginx-status
+    name: Check nginx
+    active: true
+    command: systemctl status nginx --no-pager
+    host:
+      address: 10.0.2.15
+      port: 22
+      user: app
+      auth:
+        password: host-password
+    bastion:
+      address: bastion.example.com
+      port: 22
+      user: jump
+      auth:
+        password: bastion-password
